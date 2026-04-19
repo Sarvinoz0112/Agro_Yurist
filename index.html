@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroOne - Методология</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-bg"></div>
+
+  <header class="top-nav">
+    <div class="brand">AgroOne</div>
+    <nav class="top-links">
+      <a href="#">Документы</a>
+      <a href="#">Исполнительская дисциплина</a>
+      <a href="#">Дашборд</a>
+      <a href="#">Чат</a>
+      <a href="#">Антикоррупция</a>
+      <a class="active" href="#">Методология</a>
+    </nav>
+    <div class="profile">Yurist-rahbar</div>
+  </header>
+
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="panel-title">Filtrlar <span>ICHKI HUJJATLAR BO'YICHA</span></div>
+
+      <form class="filter-form">
+        <div class="filter-block">
+          <label>1. Ichki qoida turi</label>
+          <div class="multi-select-list">
+            <label><input type="checkbox" value="Siyosat" /> Siyosat</label>
+            <label><input type="checkbox" value="Nizom" /> Nizom</label>
+            <label><input type="checkbox" value="Reglament" /> Reglament</label>
+            <label><input type="checkbox" value="Tartib" /> Tartib</label>
+            <label><input type="checkbox" value="Yo'riqnoma" /> Yo'riqnoma</label>
+            <label><input type="checkbox" value="Qoida" /> Qoida</label>
+            <label><input type="checkbox" value="Ko'rsatma" /> Ko'rsatma</label>
+            <label><input type="checkbox" value="Standart" /> Standart</label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <label>2. Bank organi nomi</label>
+          <div class="multi-select-list">
+            <label><input type="checkbox" value="Bank Boshqaruvi qarori" /> Bank Boshqaruvi qarori</label>
+            <label><input type="checkbox" value="Bank Kengashi yig'ilish qarori" /> Bank Kengashi yig'ilish qarori</label>
+            <label><input type="checkbox" value="Aksiyadorlar umumiy yig'ilishi qarori" /> Aksiyadorlar umumiy yig'ilishi qarori</label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <label>3. Munosabat turi</label>
+          <div class="multi-select-list">
+            <label><input type="checkbox" value="Kreditlash" /> Kreditlash</label>
+            <label><input type="checkbox" value="Omonat" /> Omonat</label>
+            <label><input type="checkbox" value="Moliyaviy blokka oid" /> Moliyaviy blokka oid</label>
+            <label><input type="checkbox" value="Boshqalar" /> Boshqalar</label>
+          </div>
+        </div>
+
+        <div class="filter-block">
+          <label>4. Ichki qoida holati</label>
+          <div class="multi-select-list">
+            <label><input type="checkbox" value="Amalda" /> Amalda</label>
+            <label><input type="checkbox" value="O'z kuchini yo'qotgan (arxiv)" /> O'z kuchini yo'qotgan, arxiv</label>
+            <label><input type="checkbox" value="Loyiha (muhokamada)" /> Loyiha (munosabat bildirish va tanishish uchun, jamoatchilik muhokamasida)</label>
+          </div>
+        </div>
+      </form>
+    </aside>
+
+    <section class="content-card">
+      <div class="card-head">
+        <h1>Внутренние нормативные документы <span class="counter">5</span></h1>
+        <div class="head-actions">
+          <input type="text" placeholder="Умный поиск (название, теги...)" />
+          <button class="ghost">Экспорт</button>
+          <button class="primary">+ Создать ВНД</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>REG. RAQAM</th>
+              <th>HUJJAT NOMI</th>
+              <th>QOIDA TURI</th>
+              <th>BANK O'RGANI NOMI</th>
+              <th>SANA</th>
+              <th>MAS'UL BO'LIM</th>
+              <th>MUNOSABAT TURI</th>
+              <th>QOIDA HOLATI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="doc-row">
+              <td class="code">POZ-003</td>
+              <td>
+                <strong>О внесении изменений и дополнений в Инструкции...</strong>
+                <small>Автор: Azizov A.</small>
+              </td>
+              <td>Nizom</td>
+              <td>Bank Boshqaruvi qarori</td>
+              <td>18.04.2026</td>
+              <td>Yuridik bo'lim</td>
+              <td>Kreditlash</td>
+              <td><span class="badge warn">Loyiha (muhokamada)</span></td>
+            </tr>
+            <tr class="doc-row">
+              <td class="code">FRM-001</td>
+              <td>
+                <strong>Шаблон служебной записки</strong>
+                <small>Автор: Azizov A.</small>
+              </td>
+              <td>Qoida</td>
+              <td>Bank Kengashi yig'ilish qarori</td>
+              <td>01.01.2024</td>
+              <td>Kadrlar bo'limi</td>
+              <td>Omonat</td>
+              <td><span class="badge ok">Amalda</span></td>
+            </tr>
+            <tr class="doc-row">
+              <td class="code">STD-001</td>
+              <td>
+                <strong>Стандарт корпоративного стиля и оформления до...</strong>
+                <small>Автор: Azizov A.</small>
+              </td>
+              <td>Standart</td>
+              <td>Aksiyadorlar umumiy yig'ilishi qarori</td>
+              <td>01.01.2024</td>
+              <td>Marketing bo'limi</td>
+              <td>Moliyaviy blokka oid</td>
+              <td><span class="badge ok">Amalda</span></td>
+            </tr>
+            <tr class="doc-row">
+              <td class="code">MET-001</td>
+              <td>
+                <strong>Методические указания по оценке залогового обе...</strong>
+                <small>Автор: Azizov A.</small>
+              </td>
+              <td>Ko'rsatma</td>
+              <td>Bank Boshqaruvi qarori</td>
+              <td>01.08.2024</td>
+              <td>Risk-menejment</td>
+              <td>Kreditlash</td>
+              <td><span class="badge warn">O'z kuchini yo'qotgan, arxiv</span></td>
+            </tr>
+            <tr class="doc-row">
+              <td class="code">POZ-001</td>
+              <td>
+                <strong>Положение о документообороте</strong>
+                <small>Автор: Azizov A.</small>
+              </td>
+              <td>Tartib</td>
+              <td>Bank Kengashi yig'ilish qarori</td>
+              <td>01.06.2024</td>
+              <td>Operatsion bo'lim</td>
+              <td>Omonat</td>
+              <td><span class="badge ok">Amalda</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="doc-modal" id="docModal" aria-hidden="true">
+    <div class="doc-modal-backdrop" data-close="true"></div>
+    <section class="doc-modal-window" role="dialog" aria-modal="true" aria-label="Просмотр документа">
+      <header class="doc-modal-top">
+        <button class="doc-back-btn" type="button">←</button>
+        <h2 id="modalDocId">PISMO-2026-0045</h2>
+        <button class="doc-close-btn" id="docCloseBtn" type="button">✕</button>
+      </header>
+
+      <div class="doc-modal-body">
+        <aside class="doc-left">
+          <section class="left-card">
+            <button class="lane-head" type="button" data-accordion-trigger="lanePanel" aria-expanded="true">
+              <span>РЕДАКТОР / ЛЕНТА</span>
+              <span class="arrow">⌄</span>
+            </button>
+
+            <div class="accordion-panel open" id="lanePanel">
+            <div class="lane-feed">
+              <article class="lane-item">
+                <span class="lane-avatar orange">P</span>
+                <div>
+                  <strong>POST-OFFICE</strong>
+                  <p>Документ создан — "Канцелярия"</p>
+                  <small>18 апр, 2026 г., 15:19</small>
+                </div>
+              </article>
+
+              <article class="lane-item">
+                <span class="lane-avatar orange">P</span>
+                <div>
+                  <strong>POST-OFFICE</strong>
+                  <p>Отправить · Канцелярия · у Ердамичи</p>
+                  <small>18 апр, 2026 г., 15:19</small>
+                </div>
+              </article>
+
+              <article class="lane-item">
+                <span class="lane-avatar green">Y</span>
+                <div>
+                  <strong>Yordamchi</strong>
+                  <p>Участник добавлен (EXECUTOR)</p>
+                  <small>18 апр, 2026 г., 15:19</small>
+                </div>
+              </article>
+
+              <article class="lane-item">
+                <span class="lane-avatar teal">A</span>
+                <div>
+                  <strong>Azizov A.</strong>
+                  <p>Участник добавлен (EXECUTOR)</p>
+                  <small>18 апр, 2026 г., 15:20</small>
+                </div>
+              </article>
+            </div>
+
+            <div class="comment-box">
+              <textarea placeholder="Написать комментарий... (Enter — отправить, Shift+Enter — новая строка)"></textarea>
+              <button type="button">➤</button>
+            </div>
+            </div>
+          </section>
+
+          <section class="left-accordion">
+            <div class="acc-group">
+              <button class="acc-item" type="button" data-accordion-trigger="fieldsPanel" aria-expanded="false">
+                <span>ПОЛЯ</span>
+                <span class="arrow">⌄</span>
+              </button>
+              <div class="accordion-panel" id="fieldsPanel">
+                <div class="acc-content">Тип: Поручение</div>
+                <div class="acc-content">Приоритет: Средний</div>
+              </div>
+            </div>
+
+            <div class="acc-group">
+              <button class="acc-item" type="button" data-accordion-trigger="docsPanel" aria-expanded="false">
+                <span>ДОКУМЕНТЫ <b>3</b></span>
+                <span class="arrow">⌄</span>
+              </button>
+              <div class="accordion-panel" id="docsPanel">
+                <div class="acc-content">Поручение.pdf</div>
+                <div class="acc-content">v2.png</div>
+                <div class="acc-content">Служебная-записка.docx</div>
+              </div>
+            </div>
+
+            <div class="acc-group">
+              <button class="acc-item" type="button" data-accordion-trigger="actionsPanel" aria-expanded="false">
+                <span>ДЕЙСТВИЯ</span>
+                <span class="arrow">⌄</span>
+              </button>
+              <div class="accordion-panel" id="actionsPanel">
+                <div class="acc-content">Согласовать</div>
+                <div class="acc-content">Вернуть на доработку</div>
+                <div class="acc-content">Отправить исполнителю</div>
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <section class="doc-right">
+          <div class="doc-tabs">
+            <span class="active">Поручение</span>
+            <span>Поручение 1</span>
+            <span>Поручение 2</span>
+            <span>v2.png</span>
+          </div>
+
+          <div class="doc-sheet">
+            <h3>AGROBANK</h3>
+            <p class="doc-subtitle">Автоматлаштирилган банк тизимига хизмат кўрсатиш гуруҳи</p>
+            <h4 id="modalDocTitle">Поручение</h4>
+            <p class="doc-ref">№ <span id="modalDocRef">PISMO-2026-0045</span> от 18.04.2026</p>
+
+            <dl class="doc-meta">
+              <div><dt>Исходящая дата:</dt><dd id="modalDate">2026-04-17</dd></div>
+              <div><dt>Организация:</dt><dd id="modalOrg">Центральный банк</dd></div>
+              <div><dt>Этап:</dt><dd id="modalStage">Согласование</dd></div>
+              <div><dt>Содержание:</dt><dd id="modalSummary">Подготовить ответ по документу.</dd></div>
+            </dl>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
