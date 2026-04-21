@@ -17,12 +17,30 @@
     <nav class="top-links">
       <a href="#">Документы</a>
       <a href="#">Исполнительская дисциплина</a>
-      <a href="#">Дашборд</a>
+      <a href="dashboard.html">Дашборд</a>
       <a href="#">Чат</a>
       <a href="#">Антикоррупция</a>
       <a class="active" href="#">Методология</a>
     </nav>
-    <div class="profile">Yurist-rahbar</div>
+    <div class="role-switcher" id="roleSwitcher">
+      <button
+        class="profile"
+        id="roleSwitcherBtn"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Yurist-rahbar
+      </button>
+      <div class="role-switcher-menu" id="roleSwitcherMenu" hidden>
+        <button class="role-switcher-option" type="button" data-role="Kanselyariya">Kanselyariya</button>
+        <button class="role-switcher-option" type="button" data-role="Rahbar-yordamchi">Rahbar-yordamchi</button>
+        <button class="role-switcher-option" type="button" data-role="Rahbar">Rahbar</button>
+        <button class="role-switcher-option" type="button" data-role="Yurist-yordamchi">Yurist-yordamchi</button>
+        <button class="role-switcher-option active" type="button" data-role="Yurist-rahbar">Yurist-rahbar</button>
+        <button class="role-switcher-option" type="button" data-role="Ijrochi">Ijrochi</button>
+      </div>
+    </div>
   </header>
 
   <main class="shell">
@@ -80,7 +98,7 @@
         <div class="head-actions">
           <input type="text" placeholder="Умный поиск (название, теги...)" />
           <button class="ghost">Экспорт</button>
-          <button class="primary">+ Создать ВНД</button>
+          <button class="primary" id="openCreateModalBtn">+ Создать</button>
         </div>
       </div>
 
@@ -183,7 +201,7 @@
         <aside class="doc-left">
           <section class="left-card">
             <button class="lane-head" type="button" data-accordion-trigger="lanePanel" aria-expanded="true">
-              <span>РЕДАКТОР / ЛЕНТА</span>
+              <span class="head-title"><span class="head-icon">✎</span> РЕДАКТОР / ЛЕНТА</span>
               <span class="arrow">⌄</span>
             </button>
 
@@ -236,30 +254,59 @@
           <section class="left-accordion">
             <div class="acc-group">
               <button class="acc-item" type="button" data-accordion-trigger="fieldsPanel" aria-expanded="false">
-                <span>ПОЛЯ</span>
+                <span class="head-title"><span class="head-icon">▦</span> ПОЛЯ</span>
                 <span class="arrow">⌄</span>
               </button>
               <div class="accordion-panel" id="fieldsPanel">
-                <div class="acc-content">Тип: Поручение</div>
-                <div class="acc-content">Приоритет: Средний</div>
+                <div class="acc-content"><b>Исходящий номер документа:</b> Официальный номер согласно номенклатуре банка.</div>
+                <div class="acc-content"><b>Дата регистрации:</b> Дата официального ввода в действие.</div>
+                <div class="acc-content"><b>Наименование:</b> Полное название документа.</div>
+                <div class="acc-content"><b>Краткое содержание (Аннотация):</b> Суть документа в 2-3 предложениях.</div>
+                <div class="acc-content"><b>Категория / Тип:</b> Положение, Инструкция, Регламент, Приказ.</div>
+                <div class="acc-content"><b>Версия документа:</b> Например, v.1.0, v.1.1 для отслеживания истории правок.</div>
+                <div class="acc-content"><b>Исполнитель (Автор):</b> Кто непосредственно писал текст.</div>
+                <div class="acc-content"><b>Методолог:</b> Ответственный за соответствие бизнес-процессам.</div>
+                <div class="acc-content"><b>Юрист:</b> Ответственный за соответствие законодательству.</div>
+                <div class="acc-content"><b>Контролёр:</b> Лицо, проверяющее выполнение регламента.</div>
+                <div class="acc-content"><b>Подписант:</b> Топ-менеджер или Председатель, утвердивший документ.</div>
+                <div class="acc-content"><b>Подразделение-владелец:</b> Департамент, чей процесс описывает документ.</div>
+                <div class="acc-content"><b>Основание:</b> Ссылка на внешний НПА (Закон, Постановление ЦБ, стандарт ISO или FATF).</div>
+                <div class="acc-content"><b>Связанные документы:</b> Ссылки на другие внутренние акты, на которые влияет этот документ.</div>
+                <div class="acc-content"><b>Текущий статус:</b> Черновик / На согласовании / Утвержден / Утратил силу / На архивации.</div>
+                <div class="acc-content"><b>Срок действия:</b> Бессрочно / До определенной даты.</div>
+                <div class="acc-content"><b>Дата следующего пересмотра:</b> Автоматическая дата (например, через 12 месяцев) для актуализации методологом.</div>
               </div>
             </div>
 
             <div class="acc-group">
               <button class="acc-item" type="button" data-accordion-trigger="docsPanel" aria-expanded="false">
-                <span>ДОКУМЕНТЫ <b>3</b></span>
+                <span class="head-title"><span class="head-icon">📎</span> ДОКУМЕНТЫ <b>3</b></span>
                 <span class="arrow">⌄</span>
               </button>
               <div class="accordion-panel" id="docsPanel">
-                <div class="acc-content">Поручение.pdf</div>
-                <div class="acc-content">v2.png</div>
-                <div class="acc-content">Служебная-записка.docx</div>
+                <div class="docs-toolbar">
+                  <button class="docs-add" type="button">+ Добавить файл</button>
+                </div>
+                <div class="docs-list">
+                  <article class="doc-file">
+                    <div class="doc-file-name">PISMO-2026-0478-v3.pdf</div>
+                    <div class="doc-file-meta">Версия v3.0 · 19.04.2026 · Основной файл</div>
+                  </article>
+                  <article class="doc-file">
+                    <div class="doc-file-name">PISMO-2026-0478-v2.pdf</div>
+                    <div class="doc-file-meta">Версия v2.0 · 17.04.2026</div>
+                  </article>
+                  <article class="doc-file">
+                    <div class="doc-file-name">PISMO-2026-0478-v1.pdf</div>
+                    <div class="doc-file-meta">Версия v1.0 · 11.04.2026</div>
+                  </article>
+                </div>
               </div>
             </div>
 
             <div class="acc-group">
               <button class="acc-item" type="button" data-accordion-trigger="actionsPanel" aria-expanded="false">
-                <span>ДЕЙСТВИЯ</span>
+                <span class="head-title"><span class="head-icon">✓</span> ДЕЙСТВИЯ</span>
                 <span class="arrow">⌄</span>
               </button>
               <div class="accordion-panel" id="actionsPanel">
@@ -285,14 +332,145 @@
             <h4 id="modalDocTitle">Поручение</h4>
             <p class="doc-ref">№ <span id="modalDocRef">PISMO-2026-0045</span> от 18.04.2026</p>
 
-            <dl class="doc-meta">
-              <div><dt>Исходящая дата:</dt><dd id="modalDate">2026-04-17</dd></div>
-              <div><dt>Организация:</dt><dd id="modalOrg">Центральный банк</dd></div>
-              <div><dt>Этап:</dt><dd id="modalStage">Согласование</dd></div>
-              <div><dt>Содержание:</dt><dd id="modalSummary">Подготовить ответ по документу.</dd></div>
-            </dl>
+            <section class="doc-block">
+              <div class="doc-row-item">
+                <span>Исходящая дата:</span>
+                <strong id="modalDate">2026-04-17</strong>
+              </div>
+              <div class="doc-row-item">
+                <span>Исходящий номер:</span>
+                <strong>3939</strong>
+              </div>
+            </section>
+
+            <section class="doc-block">
+              <div class="doc-row-item">
+                <span>Организация:</span>
+                <strong id="modalOrg">Центральный банк</strong>
+              </div>
+              <div class="doc-row-item">
+                <span>Текущий этап:</span>
+                <strong id="modalStage">Согласование</strong>
+              </div>
+              <div class="doc-row-item">
+                <span>Основной исполнитель:</span>
+                <strong>Azizov A.</strong>
+              </div>
+              <div class="doc-row-item">
+                <span>Соисполнитель:</span>
+                <strong>Yurist-rahbar</strong>
+              </div>
+            </section>
+
+            <section class="doc-block">
+              <h5>Содержание поручения</h5>
+              <p id="modalSummary" class="doc-summary">Подготовить ответ по документу.</p>
+              <p class="doc-deadline">Срок выполнения поручения: 20.04.2026, 05:00:00</p>
+            </section>
+
+            <div class="doc-divider"></div>
+
+            <section class="doc-footer">
+              <div class="doc-footer-top">
+                <span>№ <span id="modalDocRefBottom">PISMO-2026-0045</span></span>
+                <span>18.04.2026 г.</span>
+              </div>
+              <div class="doc-sign">BOSHQARUV</div>
+              <div class="doc-stamp">506</div>
+            </section>
           </div>
         </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="create-modal" id="createModal" aria-hidden="true">
+    <div class="create-modal-backdrop" data-create-close="true"></div>
+    <section class="create-modal-window" role="dialog" aria-modal="true" aria-label="Создание документа">
+      <header class="create-modal-top">
+        <div class="create-title-left">⊕ СОЗДАНИЕ ДОКУМЕНТА</div>
+        <button class="create-close-btn" id="createCloseBtn" type="button">✕</button>
+      </header>
+
+      <div class="create-modal-body">
+        <div id="createHomeView">
+          <h2>Создание документа</h2>
+          <p>Выберите журнал или найдите нужный тип документа напрямую</p>
+
+          <div class="create-search-wrap">
+            <input type="text" placeholder="Поиск по названию или коду (IT-14)" />
+          </div>
+
+          <div class="create-cards">
+            <button type="button" class="create-card">ВНД <span>›</span></button>
+            <button type="button" class="create-card" id="openTestBuilderBtn">Test shakillantirish <span>›</span></button>
+          </div>
+        </div>
+
+        <div id="testBuilderView" class="test-builder hidden">
+          <div class="tb-head">
+            <button type="button" class="tb-back-btn" id="testBuilderBackBtn">← Orqaga</button>
+            <h2>Test shakillantirish</h2>
+          </div>
+
+          <div class="tb-stepper" id="tbStepper">
+            <div class="tb-step-pill active" data-step-pill="1">1. Hujjat</div>
+            <div class="tb-step-pill" data-step-pill="2">2. Savollar soni</div>
+            <div class="tb-step-pill" data-step-pill="3">3. Savollar va variantlar</div>
+          </div>
+
+          <div class="tb-step" id="tbStep1">
+            <h3>1. Hujjat va versiyani tanlang</h3>
+            <div class="tb-grid">
+              <label>
+                <span>Ichki huquqiy hujjat</span>
+                <select id="testDocSelect">
+                  <option value="">Hujjatni tanlang</option>
+                </select>
+              </label>
+              <label>
+                <span>Versiya</span>
+                <select id="testVersionSelect">
+                  <option value="">Versiyani tanlang</option>
+                  <option>v3.0</option>
+                  <option>v2.0</option>
+                  <option>v1.0</option>
+                </select>
+              </label>
+            </div>
+            <button type="button" class="tb-next-btn" id="tbToStep2Btn">Davom etish</button>
+          </div>
+
+          <div class="tb-step hidden" id="tbStep2">
+            <h3>2. Savollar sonini kiriting</h3>
+            <label class="tb-count-label">
+              <span>Nechta savol shakillantiriladi?</span>
+              <input type="number" id="questionCountInput" min="1" max="50" value="5" />
+            </label>
+            <button type="button" class="tb-next-btn" id="tbGenerateQuestionsBtn">Savollar formasi yaratish</button>
+          </div>
+
+          <div class="tb-step hidden" id="tbStep3">
+            <div class="tb-step3-head">
+              <h3>3. Test savollari va variantlarini kiriting</h3>
+              <div class="tb-step3-actions">
+                <div class="tb-icon-actions">
+                  <button type="button" class="tb-icon-btn" id="tbAddQuestionBtn" title="Savol qo'shish" aria-label="Savol qo'shish">＋</button>
+                  <button type="button" class="tb-icon-btn" id="tbSaveDraftBtn" title="Draft saqlash" aria-label="Draft saqlash">💾</button>
+                  <button type="button" class="tb-icon-btn" id="tbLoadDraftBtn" title="Draft yuklash" aria-label="Draft yuklash">⤓</button>
+                </div>
+                <button type="button" class="tb-primary-btn" id="tbFinalizeBtn">Testni yakunlash</button>
+              </div>
+            </div>
+            <div class="tb-utility-row">
+              <input type="text" id="tbQuestionSearch" placeholder="Savol/variant bo'yicha qidirish..." />
+              <span id="tbAutosaveState" class="tb-autosave-state">Autosave: hali saqlanmagan</span>
+            </div>
+            <div id="tbMetaInfo" class="tb-meta-info"></div>
+            <div id="tbValidationOutput" class="tb-validation-output hidden"></div>
+            <div id="questionsContainer" class="questions-container"></div>
+          </div>
+        </div>
       </div>
     </section>
   </div>

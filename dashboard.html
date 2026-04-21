@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroOne - Дашборд</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-page">
+  <div class="app-bg"></div>
+
+  <section class="dashboard-window" aria-label="Dashboard">
+    <header class="top-nav">
+      <div class="brand">AgroOne</div>
+      <nav class="top-links">
+        <a href="#">Документы</a>
+        <a href="#">Исполнительская дисциплина</a>
+        <a class="active" href="dashboard.html">Дашборд</a>
+        <a href="#">Чат</a>
+        <a href="#">Антикоррупция</a>
+        <a href="index.html">Методология</a>
+      </nav>
+      <div class="role-switcher" id="roleSwitcher">
+        <button
+          class="profile"
+          id="roleSwitcherBtn"
+          type="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Yurist-rahbar
+        </button>
+        <div class="role-switcher-menu" id="roleSwitcherMenu" hidden>
+          <button class="role-switcher-option" type="button" data-role="Kanselyariya">Kanselyariya</button>
+          <button class="role-switcher-option" type="button" data-role="Rahbar-yordamchi">Rahbar-yordamchi</button>
+          <button class="role-switcher-option" type="button" data-role="Rahbar">Rahbar</button>
+          <button class="role-switcher-option" type="button" data-role="Yurist-yordamchi">Yurist-yordamchi</button>
+          <button class="role-switcher-option active" type="button" data-role="Yurist-rahbar">Yurist-rahbar</button>
+          <button class="role-switcher-option" type="button" data-role="Ijrochi">Ijrochi</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-body">
+      <aside class="dashboard-sidebar">
+        <div class="dash-block-title">
+          Фильтры и навигация
+          <span>Управленческий отчёт</span>
+        </div>
+
+        <div class="dash-section">
+          <h5>Вопросы</h5>
+          <div class="dash-doc-filters">
+            <div class="dash-multi-dropdown" id="dashRuleTypeDropdown">
+              <button type="button" class="dash-multi-trigger" id="dashRuleTypeTrigger">Ichki qoida turi (barchasi)</button>
+              <div class="dash-multi-menu">
+                <label><input type="checkbox" value="__all" checked /> Barchasi</label>
+                <label><input type="checkbox" value="Siyosat" /> Siyosat</label>
+                <label><input type="checkbox" value="Nizom" /> Nizom</label>
+                <label><input type="checkbox" value="Reglament" /> Reglament</label>
+                <label><input type="checkbox" value="Tartib" /> Tartib</label>
+                <label><input type="checkbox" value="Yo'riqnoma" /> Yo'riqnoma</label>
+                <label><input type="checkbox" value="Qoida" /> Qoida</label>
+                <label><input type="checkbox" value="Ko'rsatma" /> Ko'rsatma</label>
+                <label><input type="checkbox" value="Standart" /> Standart</label>
+              </div>
+            </div>
+            <select id="dashRuleTypeFilter" class="hidden" multiple>
+              <option value="Siyosat">Siyosat</option>
+              <option value="Nizom">Nizom</option>
+              <option value="Reglament">Reglament</option>
+              <option value="Tartib">Tartib</option>
+              <option value="Yo'riqnoma">Yo'riqnoma</option>
+              <option value="Qoida">Qoida</option>
+              <option value="Ko'rsatma">Ko'rsatma</option>
+              <option value="Standart">Standart</option>
+            </select>
+            <div class="dash-multi-dropdown" id="dashDocNameDropdown">
+              <button type="button" class="dash-multi-trigger" id="dashDocNameTrigger">Hujjat nomi (barchasi)</button>
+              <div class="dash-multi-menu" id="dashDocNameMenu"></div>
+            </div>
+            <select id="dashDocNameFilter" class="hidden" multiple></select>
+            <div class="dash-multi-dropdown" id="dashVersionDropdown">
+              <button type="button" class="dash-multi-trigger" id="dashVersionTrigger">Hujjat versiyasi (barchasi)</button>
+              <div class="dash-multi-menu" id="dashVersionMenu"></div>
+            </div>
+            <select id="dashVersionFilter" class="hidden" multiple></select>
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <h5>Период</h5>
+          <div class="dash-period">
+            <button>1 день</button>
+            <button>1 неделя</button>
+            <button class="active">1 месяц</button>
+            <button>1 год</button>
+            <button>Свой</button>
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <h5>Структура банка</h5>
+          <select id="bankRegionFilter">
+            <option>Все регионы</option>
+            <option>Республика Каракалпакстан</option>
+            <option>Андижанская область</option>
+            <option>Бухарская область</option>
+            <option>Ферганская область</option>
+            <option>Джизакская область</option>
+            <option>Хорезмская область</option>
+            <option>Наманганская область</option>
+            <option>Навоийская область</option>
+            <option>Кашкадарьинская область</option>
+            <option>Самаркандская область</option>
+            <option>Сырдарьинская область</option>
+            <option>Сурхандарьинская область</option>
+            <option>Ташкентская область</option>
+            <option>г. Ташкент</option>
+          </select>
+          <select id="bankBranchTypeFilter">
+            <option>Все типы филиалов</option>
+            <option>Головной офис</option>
+            <option>Региональный</option>
+          </select>
+          <select id="bankDepartmentFilter">
+            <option>Все отделы</option>
+            <option>Юридический отдел</option>
+            <option>Кредитный отдел</option>
+            <option>Отдел депозитов</option>
+            <option>Операционный отдел</option>
+            <option>Риск-менеджмент</option>
+            <option>Комплаенс</option>
+            <option>Внутренний аудит</option>
+            <option>Отдел кадров</option>
+            <option>IT-отдел</option>
+            <option>Маркетинг</option>
+            <option>Отдел по работе с клиентами</option>
+          </select>
+          <label class="dash-inline-check">
+            <input type="checkbox" id="headOfficeOnlyFilter" />
+            <span>Только головной офис</span>
+          </label>
+        </div>
+
+        <div class="dash-section">
+          <h5>Разрез</h5>
+          <div class="dash-segment">
+            <button class="active" type="button">
+              Территориально
+              <small>По областям</small>
+            </button>
+            <button type="button">
+              Подразделения
+              <small>По организациям</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <h5>Вид</h5>
+          <div class="dash-view-grid">
+            <button type="button" data-view="table"><span>▦</span>Таблица</button>
+            <button type="button" data-view="bar"><span>▤</span>Гистограмма</button>
+            <button type="button" data-view="line"><span>◹</span>Линейный</button>
+            <button type="button" data-view="pie"><span>◔</span>Круговая</button>
+            <button type="button" data-view="cards"><span>▣</span>Карточки</button>
+            <button class="active" type="button" data-view="overview"><span>◪</span>Карта</button>
+          </div>
+        </div>
+
+        <div class="dash-bottom-actions">
+          <button class="build">Сформировать</button>
+          <button>Очистить</button>
+        </div>
+      </aside>
+
+      <section class="dashboard-main">
+        <div class="dash-main-head">
+          <div>
+            <h3 id="dashboardViewTitle">УПРАВЛЕНЧЕСКИЙ ОТЧЁТ — TEST ANALYTICS</h3>
+            <p id="dashboardSubTitle">Тестлар бўйича аналитика</p>
+          </div>
+          <div class="dash-head-actions">
+            <select id="dashboardTypeSelect" class="dash-type-select">
+              <option value="test">Test Analytics</option>
+              <option value="compliance">Compliance Monitoring</option>
+              <option value="performance">Filial Performance</option>
+              <option value="executive">Executive Dashboard</option>
+            </select>
+            <button class="metric" id="metricTotal">∑ Тестов: 128</button>
+            <button id="downloadReportBtn">PDF hisobot</button>
+            <button>Экспорт</button>
+            <button>Обновить</button>
+          </div>
+        </div>
+
+        <div class="analytics-canvas">
+          <div class="analytics-view" data-view-panel="overview">
+            <div class="overview-toolbar">
+              <div class="date-range-hint">So‘nggi yangilanish: 20.04.2026, 16:42</div>
+            </div>
+
+            <section class="insight-card" id="testOverviewCardsSection">
+              <h5>Test bo‘yicha asosiy kartochkalar</h5>
+              <div class="doc-cards-grid overview-cards-grid" id="overviewCardsGrid">
+                <article>
+                  <h6>Jami xodimlar</h6>
+                  <p>Bosh ofis kesimida</p>
+                  <b>742</b>
+                </article>
+                <article>
+                  <h6>Test topshirganlar</h6>
+                  <p>Faol ishtirokchilar</p>
+                  <b>589</b>
+                </article>
+                <article>
+                  <h6>O'tganlar</h6>
+                  <p>Muvaffaqiyatli topshirganlar</p>
+                  <b>478</b>
+                </article>
+                <article>
+                  <h6>Yeqilganlar</h6>
+                  <p>Qayta topshirish kerak</p>
+                  <b>111</b>
+                </article>
+                <article>
+                  <h6>Jami testlar</h6>
+                  <p>Shakllantirilgan testlar</p>
+                  <b>128</b>
+                </article>
+                <article>
+                  <h6>Qiyin savollar ulushi</h6>
+                  <p>Murakkab savollar nisbati</p>
+                  <b>23%</b>
+                </article>
+              </div>
+            </section>
+
+            <div class="overview-top-analytics">
+              <section class="insight-card overview-pass-pie" id="overviewPassPieSection">
+                <h5>O'rtacha o'tish foizi</h5>
+                <div class="overview-pass-pie-body">
+                  <div class="overview-pass-donut" id="overviewPassPieDonut" aria-hidden="true">
+                    <div class="overview-pass-center">
+                      <strong id="overviewPassRateValue">81%</strong>
+                      <span>o'rtacha o'tish</span>
+                    </div>
+                  </div>
+                  <div class="overview-pass-meta">
+                    <p id="overviewPassRateText">Test topshirganlar ichida muvaffaqiyatli o'tganlar ulushi</p>
+                    <div class="overview-pass-legend">
+                      <span><i class="ok"></i> O'tganlar: <b id="overviewPassCount">478</b></span>
+                      <span><i class="rest"></i> Yiqilganlar: <b id="overviewFailCount">111</b></span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="insight-card">
+                <h5>Hujjatlar bo‘yicha o‘zlashtirish</h5>
+                <div class="mini-bars" id="miniBarsContainer">
+                  <div><span>Kreditlash nizomi v3.0</span><i style="width: 86%"></i><b>86%</b></div>
+                  <div><span>Ichki muomala qoidasi v2.0</span><i style="width: 78%"></i><b>78%</b></div>
+                  <div><span>Korporativ standart v2.1</span><i style="width: 69%"></i><b>69%</b></div>
+                  <div><span>Metodik ko‘rsatma v1.0</span><i style="width: 74%"></i><b>74%</b></div>
+                  <div><span>Depozit siyosati v1.2</span><i style="width: 82%"></i><b>82%</b></div>
+                  <div><span>Riskni boshqarish reglamenti v2.0</span><i style="width: 71%"></i><b>71%</b></div>
+                  <div><span>Kadrlar bo‘yicha yo‘riqnoma v1.3</span><i style="width: 76%"></i><b>76%</b></div>
+                </div>
+              </section>
+            </div>
+
+            <div class="deep-grid">
+              <section class="insight-card">
+                <h5>Bo‘limlar reytingi (Top-5)</h5>
+                <div class="leader-list" id="leaderList">
+                  <div><strong>1.</strong><span>Yuridik</span><b>92%</b></div>
+                  <div><strong>2.</strong><span>IT</span><b>88%</b></div>
+                  <div><strong>3.</strong><span>Kredit</span><b>81%</b></div>
+                  <div><strong>4.</strong><span>Operatsion</span><b>74%</b></div>
+                  <div><strong>5.</strong><span>Risk</span><b>67%</b></div>
+                </div>
+              </section>
+
+              <section class="insight-card">
+                <h5>Risk va ogohlantirishlar</h5>
+                <div class="alert-list" id="alertList">
+                  <article class="alert danger"><span>Kritik</span> 3 ta filialda topshirish darajasi 50% dan past</article>
+                  <article class="alert warn"><span>Diqqat</span> 12 ta savol bo‘yicha xato ulushi 40% dan yuqori</article>
+                  <article class="alert info"><span>Info</span> v2.1 dan v3.0 ga o‘tishda natija +9% oshgan</article>
+                </div>
+              </section>
+            </div>
+
+            <div class="drill-card" id="insightDetailPanel">
+              <h5 id="insightDetailTitle">Umumiy holat bo‘yicha tafsilot</h5>
+              <p id="insightDetailText">
+                Eng yuqori natija Yuridik bo‘limida qayd etilgan. O‘rtacha topshirish vaqti 14 daqiqa.
+                Qayta topshirish ko‘proq Operatsion va Risk yo‘nalishlarida kuzatilgan.
+              </p>
+            </div>
+          </div>
+
+          <div class="analytics-view hidden" data-view-panel="table">
+            <div class="data-table-wrap">
+              <table class="analytics-table">
+                <thead>
+                  <tr>
+                    <th>Hujjat</th>
+                    <th>Versiya</th>
+                    <th>Topshirganlar</th>
+                    <th>O‘rtacha ball</th>
+                    <th>O‘tish foizi</th>
+                    <th>Qayta topshirish</th>
+                    <th>Risk holati</th>
+                  </tr>
+                </thead>
+                <tbody id="analyticsTableBody">
+                  <tr><td>Kreditlash nizomi</td><td>v3.0</td><td>213</td><td>84/100</td><td>86%</td><td>9%</td><td><span class="status ok">Past</span></td></tr>
+                  <tr><td>Ichki muomala qoidasi</td><td>v2.0</td><td>178</td><td>76/100</td><td>78%</td><td>17%</td><td><span class="status warn">O‘rta</span></td></tr>
+                  <tr><td>Korporativ standart</td><td>v2.1</td><td>151</td><td>71/100</td><td>69%</td><td>24%</td><td><span class="status bad">Yuqori</span></td></tr>
+                  <tr><td>Metodik ko‘rsatma</td><td>v1.0</td><td>200</td><td>74/100</td><td>74%</td><td>19%</td><td><span class="status warn">O‘rta</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="analytics-view hidden" data-view-panel="bar">
+            <div class="chart-card">
+              <h5>Bo‘limlar bo‘yicha o‘tish foizi</h5>
+              <div class="bar-chart" id="barChartContainer">
+                <div><span>Yuridik</span><i style="width:92%"></i><b>92%</b></div>
+                <div><span>Kredit</span><i style="width:81%"></i><b>81%</b></div>
+                <div><span>Operatsion</span><i style="width:74%"></i><b>74%</b></div>
+                <div><span>Risk</span><i style="width:67%"></i><b>67%</b></div>
+                <div><span>IT</span><i style="width:88%"></i><b>88%</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-view hidden" data-view-panel="line">
+            <div class="chart-card">
+              <h5>Haftalar bo‘yicha test topshirish dinamikasi</h5>
+              <svg class="line-chart" viewBox="0 0 800 260" role="img" aria-label="Test dinamikasi">
+                <polyline id="lineChartPolyline" points="40,210 160,172 280,180 400,130 520,118 640,86 760,64" />
+                <g class="line-points" id="lineChartPoints">
+                  <circle cx="40" cy="210" r="5"></circle>
+                  <circle cx="160" cy="172" r="5"></circle>
+                  <circle cx="280" cy="180" r="5"></circle>
+                  <circle cx="400" cy="130" r="5"></circle>
+                  <circle cx="520" cy="118" r="5"></circle>
+                  <circle cx="640" cy="86" r="5"></circle>
+                  <circle cx="760" cy="64" r="5"></circle>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="analytics-view hidden" data-view-panel="pie">
+            <div class="chart-card pie-layout">
+              <div class="pie-donut" id="pieDonut" aria-hidden="true"></div>
+              <ul class="pie-legend" id="pieLegend">
+                <li><i class="ok"></i>Muvaffaqiyatli: 61%</li>
+                <li><i class="mid"></i>Qayta topshirgan: 27%</li>
+                <li><i class="bad"></i>Topshirmagan: 12%</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="analytics-view hidden" data-view-panel="cards">
+            <div class="doc-cards-grid" id="docCardsGrid">
+              <article>
+                <h6>Jami xodimlar</h6>
+                <p>Bosh ofis kesimida</p>
+                <b>742</b>
+              </article>
+              <article>
+                <h6>Test topshirganlar</h6>
+                <p>Faol ishtirokchilar</p>
+                <b>589</b>
+              </article>
+              <article>
+                <h6>O'tganlar</h6>
+                <p>Muvaffaqiyatli topshirganlar</p>
+                <b>478</b>
+              </article>
+              <article>
+                <h6>Yeqilganlar</h6>
+                <p>Qayta topshirish kerak</p>
+                <b>111</b>
+              </article>
+              <article>
+                <h6>Jami testlar</h6>
+                <p>Shakllantirilgan testlar</p>
+                <b>128</b>
+              </article>
+              <article>
+                <h6>Qiyin savollar ulushi</h6>
+                <p>Murakkab savollar nisbati</p>
+                <b>23%</b>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
