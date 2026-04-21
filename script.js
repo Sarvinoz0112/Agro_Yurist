@@ -62,6 +62,12 @@ const pieLegend = document.getElementById('pieLegend');
 const docCardsGrid = document.getElementById('docCardsGrid');
 const insightDetailTitle = document.getElementById('insightDetailTitle');
 const insightDetailText = document.getElementById('insightDetailText');
+const insightDetailContent = document.getElementById('insightDetailContent');
+const dashboardDrillModal = document.getElementById('dashboardDrillModal');
+const dashboardDrillCloseBtn = document.getElementById('dashboardDrillCloseBtn');
+const dashboardDrillTitle = document.getElementById('dashboardDrillTitle');
+const dashboardDrillSubtitle = document.getElementById('dashboardDrillSubtitle');
+const dashboardDrillBody = document.getElementById('dashboardDrillBody');
 const dashRuleTypeFilter = document.getElementById('dashRuleTypeFilter');
 const dashRuleTypeDropdown = document.getElementById('dashRuleTypeDropdown');
 const dashRuleTypeTrigger = document.getElementById('dashRuleTypeTrigger');
@@ -95,8 +101,14 @@ const modalDate = document.getElementById('modalDate');
 const modalSummary = document.getElementById('modalSummary');
 const accordionTriggers = document.querySelectorAll('[data-accordion-trigger]');
 const DRAFT_KEY = 'agro_test_builder_draft_v1';
+const ROLE_STORAGE_KEY = 'agro_active_role_v1';
+const KANSELYARIYA_PAGE = 'kanselyariya.html';
+const KANSELYARIYA_PATH = 'kanselyariya/kanselyariya.html';
 let autosaveTimer = null;
 let currentDashboardType = 'test';
+const DASHBOARD_REFRESH_MS = 15000;
+let dashboardAutoRefreshTimer = null;
+let dashboardRefreshTick = 0;
 const DEFAULT_DASHBOARD_DOCS = [
   { name: "О внесении изменений и дополнений в Инструкции...", ruleType: 'Nizom', versions: ['v3.0', 'v2.1'] },
   { name: 'Шаблон служебной записки', ruleType: 'Qoida', versions: ['v2.0', 'v1.0'] },
@@ -134,8 +146,12 @@ const DASHBOARD_ANALYTICS = {
     { name: 'IT barqarorlik ko‘rsatmasi', version: 'v3.3', ruleType: "Ko'rsatma", region: 'г. Ташкент', branchType: 'Головной офис', department: 'IT-отдел', headOffice: true, updatedDaysAgo: 58, employeeCount: 132, submitted: 110, avgScore: 83, passRate: 86, retryRate: 9 },
   ],
 };
+const DASHBOARD_ANALYTICS_BASE = JSON.parse(JSON.stringify(DASHBOARD_ANALYTICS));
 let currentInsightType = 'summary';
 let latestDashboardInsights = null;
+let activeDrillCardKey = null;
+let drillTopicMode = null;
+let latestDrillContext = null;
 
 const DASHBOARD_PRESETS = {
   test: {
@@ -499,7 +515,8 @@ function syncBodyScroll() {
   const isAnyModalOpen =
     docModal?.classList.contains('show') ||
     createModal?.classList.contains('show') ||
-    dashboardModal?.classList.contains('show');
+    dashboardModal?.classList.contains('show') ||
+    dashboardDrillModal?.classList.contains('show');
   document.body.style.overflow = isAnyModalOpen ? 'hidden' : '';
 }
 
@@ -602,6 +619,41 @@ function setActiveRole(role) {
   });
 }
 
+function getCurrentPageName() {
+  const path = window.location.pathname || '';
+  const pieces = path.split('/').filter(Boolean);
+  return pieces[pieces.length - 1] || 'index.html';
+}
+
+function persistRole(role) {
+  try {
+    localStorage.setItem(ROLE_STORAGE_KEY, role);
+  } catch {
+    // ignore storage unavailability
+  }
+}
+
+function getPersistedRole() {
+  try {
+    return localStorage.getItem(ROLE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function redirectByRole(role) {
+  const page = getCurrentPageName();
+  if (role === 'Kanselyariya' && page !== KANSELYARIYA_PAGE) {
+    window.location.href = KANSELYARIYA_PATH;
+    return true;
+  }
+  if (page === KANSELYARIYA_PAGE && role !== 'Kanselyariya') {
+    window.location.href = 'index.html';
+    return true;
+  }
+  return false;
+}
+
 function setDashboardView(view) {
   const titles = {
     overview: 'УПРАВЛЕНЧЕСКИЙ ОТЧЁТ — TEST ANALYTICS',
@@ -638,19 +690,39 @@ function resolveMetricTone(title) {
   return { tone: 'default', chip: "Ko'rsatkich" };
 }
 
+function getCardKeyFromTitle(title) {
+  const t = normalizeFilterValue(title);
+  if (t.includes('jami xodim')) return 'totalEmployees';
+  if (t.includes('test topshirgan')) return 'submittedEmployees';
+  if (t.includes("otgan")) return 'passedEmployees';
+  if (t.includes('yeqilgan') || t.includes('yiqilgan')) return 'failedEmployees';
+  if (t.includes('jami test')) return 'totalTests';
+  if (t.includes('qiyin savollar')) return 'hardQuestions';
+  return 'unknown';
+}
+
 function buildMetricCardHTML(card) {
   const { tone, chip } = resolveMetricTone(card.title);
-  return `<article class="metric-card metric-${tone}">
+  const key = card.key || getCardKeyFromTitle(card.title);
+  return `<article class="metric-card metric-${tone}" data-card-key="${key}" role="button" tabindex="0">
     <span class="metric-chip">${chip}</span>
     <h6>${card.title}</h6>
     <p>${card.meta}</p>
-    <b class="metric-value">${card.value}</b>
+  <b class="metric-value">${card.value}</b>
   </article>`;
 }
 
 function parseNumeric(text) {
   const cleaned = String(text || '').replace(/[^0-9.]/g, '');
   return Number(cleaned || 0);
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function normalizeFilterValue(text) {
@@ -720,6 +792,125 @@ function getDashboardRecords(type = currentDashboardType) {
   return (DASHBOARD_ANALYTICS[type] || []).map((record) => ({ ...record }));
 }
 
+function buildTestQuestionBank(record, testIndex) {
+  const totalQuestions = clamp(16 + (testIndex % 5) * 3, 12, 30);
+  return Array.from({ length: 8 }, (_, idx) => {
+    const number = idx + 1;
+    const hard = number % 3 === 0 || number === 7;
+    const options = [
+      `${record.name}: asosiy tushuncha`,
+      `${record.name}: amaliy holat`,
+      `${record.name}: me'yoriy talab`,
+      `${record.name}: javobgarlik tartibi`,
+    ];
+    const correctIndex = (idx + testIndex) % options.length;
+    return {
+      id: `${record.name}-${number}`,
+      text: `${number}-savol. ${record.name} bo‘yicha nazorat savoli`,
+      options,
+      correctAnswer: `ABCD`.charAt(correctIndex),
+      hard,
+      wrongRate: clamp(record.retryRate + (hard ? 12 : 4) + (idx % 4) * 3, 6, 92),
+      totalQuestions,
+    };
+  });
+}
+
+function buildDrillContext(records) {
+  const firstNames = ['Aziza', 'Bekzod', 'Diyor', 'Malika', 'Sardor', 'Kamola', 'Jahongir', 'Sitora', 'Farrux', 'Nigina'];
+  const lastNames = ['Karimov', 'Rasulov', 'Yuldashev', 'Saidova', 'Kadirov', 'Ismoilova', 'Tursunov', 'Nazarova'];
+  const middleNames = ['Anvar o‘g‘li', 'Botir o‘g‘li', 'Shuhrat qizi', 'Alisher qizi', 'Umar o‘g‘li', 'Zafar qizi'];
+  const roles = ['Kanselyariya', 'Rahbar-yordamchi', 'Rahbar', 'Yurist-yordamchi', 'Yurist-rahbar', 'Ijrochi'];
+  const tests = records.map((record, idx) => ({
+    topic: record.name,
+    version: record.version,
+    totalQuestions: clamp(16 + (idx % 5) * 3, 12, 30),
+    questions: buildTestQuestionBank(record, idx),
+  }));
+
+  const employees = [];
+  let globalIndex = 0;
+  records.forEach((record, recordIndex) => {
+    const test = tests[recordIndex];
+    const passCount = roundNumber((record.submitted * record.passRate) / 100);
+    const submittedCount = record.submitted;
+    for (let i = 0; i < record.employeeCount; i += 1) {
+      const idx = globalIndex + i;
+      const fullName = `${lastNames[idx % lastNames.length]} ${firstNames[idx % firstNames.length]} ${middleNames[idx % middleNames.length]}`;
+      const role = roles[idx % roles.length];
+      const department = record.department;
+      const submitted = i < submittedCount;
+      const passed = submitted && i < passCount;
+      let attempt = null;
+      if (submitted) {
+        const shift = randomInt(-3, 3);
+        const baseCorrect = roundNumber((test.totalQuestions * record.avgScore) / 100);
+        const threshold = roundNumber(test.totalQuestions * 0.7);
+        let correctAnswers = clamp(baseCorrect + shift, 0, test.totalQuestions);
+        if (passed) correctAnswers = Math.max(correctAnswers, threshold);
+        if (!passed) correctAnswers = Math.min(correctAnswers, threshold - 1);
+        attempt = {
+          topic: test.topic,
+          version: test.version,
+          result: `${correctAnswers}/${test.totalQuestions}`,
+          passed,
+        };
+      }
+      employees.push({
+        fullName,
+        role,
+        department,
+        attempt,
+      });
+    }
+    globalIndex += record.employeeCount;
+  });
+
+  return { employees, tests };
+}
+
+function mutateDashboardAnalytics() {
+  const types = Object.keys(DASHBOARD_ANALYTICS);
+  types.forEach((type) => {
+    const records = DASHBOARD_ANALYTICS[type];
+    const baseRecords = DASHBOARD_ANALYTICS_BASE[type] || [];
+    records.forEach((record, idx) => {
+      const base = baseRecords[idx] || record;
+      const submittedMin = Math.max(0, Math.round(base.employeeCount * 0.45));
+      record.submitted = clamp(base.submitted + randomInt(-10, 10), submittedMin, base.employeeCount);
+      record.avgScore = clamp(base.avgScore + randomInt(-3, 3), 55, 99);
+      record.passRate = clamp(base.passRate + randomInt(-4, 4), 50, 99);
+      record.retryRate = clamp(base.retryRate + randomInt(-3, 3), 1, 40);
+      record.updatedDaysAgo = clamp(base.updatedDaysAgo + randomInt(-2, 2), 0, 365);
+    });
+  });
+}
+
+function pulseDashboardUpdate() {
+  const dashMain = document.querySelector('.dashboard-main');
+  if (!dashMain) return;
+  dashMain.classList.remove('live-update-pulse');
+  void dashMain.offsetWidth;
+  dashMain.classList.add('live-update-pulse');
+}
+
+function refreshDashboardLiveData() {
+  dashboardRefreshTick += 1;
+  mutateDashboardAnalytics();
+  applyDashboardDocFilters();
+  pulseDashboardUpdate();
+}
+
+function startDashboardAutoRefresh() {
+  if (!dashboardTypeSelect) return;
+  if (dashboardAutoRefreshTimer) {
+    clearInterval(dashboardAutoRefreshTimer);
+  }
+  dashboardAutoRefreshTimer = setInterval(() => {
+    refreshDashboardLiveData();
+  }, DASHBOARD_REFRESH_MS);
+}
+
 function getDashboardDocsMeta(type = currentDashboardType) {
   const records = getDashboardRecords(type);
   if (!records.length) return DEFAULT_DASHBOARD_DOCS;
@@ -784,12 +975,12 @@ function buildDashboardCards(records) {
   );
 
   return [
-    { title: 'Jami xodimlar', meta: `${records.length} ta hujjat kesimida`, value: `${totalEmployees}` },
-    { title: 'Test topshirganlar', meta: 'Faol ishtirokchilar', value: `${totalSubmitted}` },
-    { title: "O'tganlar", meta: 'Muvaffaqiyatli topshirganlar', value: `${totalPassed}` },
-    { title: 'Yeqilganlar', meta: 'Qayta topshirish kerak', value: `${totalFailed}` },
-    { title: 'Jami testlar', meta: 'Filtrlangan hujjatlar soni', value: `${records.length}` },
-    { title: 'Qiyin savollar ulushi', meta: "Retry va xato ulushi asosida", value: `${averageDifficulty}%` },
+    { key: 'totalEmployees', title: 'Jami xodimlar', meta: `${records.length} ta hujjat kesimida`, value: `${totalEmployees}` },
+    { key: 'submittedEmployees', title: 'Test topshirganlar', meta: 'Faol ishtirokchilar', value: `${totalSubmitted}` },
+    { key: 'passedEmployees', title: "O'tganlar", meta: 'Muvaffaqiyatli topshirganlar', value: `${totalPassed}` },
+    { key: 'failedEmployees', title: 'Yeqilganlar', meta: 'Qayta topshirish kerak', value: `${totalFailed}` },
+    { key: 'totalTests', title: 'Jami testlar', meta: 'Filtrlangan hujjatlar soni', value: `${records.length}` },
+    { key: 'hardQuestions', title: 'Qiyin savollar ulushi', meta: "Retry va xato ulushi asosida", value: `${averageDifficulty}%` },
   ];
 }
 
@@ -1112,6 +1303,193 @@ function setInsightDetail(type) {
   const selected = details[type] || details.summary;
   if (insightDetailTitle) insightDetailTitle.textContent = selected.title;
   if (insightDetailText) insightDetailText.textContent = selected.text;
+  if (insightDetailText) insightDetailText.classList.remove('hidden');
+  if (insightDetailContent) {
+    insightDetailContent.classList.add('hidden');
+    insightDetailContent.innerHTML = '';
+  }
+  closeDashboardDrillModal();
+  activeDrillCardKey = null;
+  drillTopicMode = null;
+  latestDrillContext = null;
+}
+
+function openDashboardDrillModal() {
+  dashboardDrillModal?.classList.add('show');
+  dashboardDrillModal?.setAttribute('aria-hidden', 'false');
+  syncBodyScroll();
+}
+
+function closeDashboardDrillModal() {
+  dashboardDrillModal?.classList.remove('show');
+  dashboardDrillModal?.setAttribute('aria-hidden', 'true');
+  document
+    .querySelector('.dashboard-drill-window')
+    ?.classList.remove(
+      'accent-totalEmployees',
+      'accent-submittedEmployees',
+      'accent-passedEmployees',
+      'accent-failedEmployees',
+      'accent-totalTests',
+      'accent-hardQuestions',
+    );
+  syncBodyScroll();
+  activeDrillCardKey = null;
+  drillTopicMode = null;
+}
+
+function setDrillModalAccent(cardKey) {
+  const win = document.querySelector('.dashboard-drill-window');
+  if (!win) return;
+  win.classList.remove(
+    'accent-totalEmployees',
+    'accent-submittedEmployees',
+    'accent-passedEmployees',
+    'accent-failedEmployees',
+    'accent-totalTests',
+    'accent-hardQuestions',
+  );
+  win.classList.add(`accent-${cardKey}`);
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function showDrillContent(title, html, subtitle = '') {
+  if (dashboardDrillTitle) dashboardDrillTitle.textContent = title;
+  if (dashboardDrillSubtitle) {
+    dashboardDrillSubtitle.textContent = subtitle;
+    dashboardDrillSubtitle.classList.toggle('hidden', !subtitle);
+  }
+  if (dashboardDrillBody) {
+    dashboardDrillBody.innerHTML = html;
+  }
+  openDashboardDrillModal();
+}
+
+function renderEmployeeDrill(title, rows, includeTopic = false, includeResult = false) {
+  if (!rows.length) {
+    showDrillContent(title, '<div class="drill-toolbar">Tanlangan filtrlar bo‘yicha xodim topilmadi.</div>');
+    return;
+  }
+
+  const headers = ['№', 'F.I.Sh', 'Rol', "Bo‘lim"];
+  if (includeTopic) headers.push('Test mavzusi');
+  if (includeResult) headers.push('Natija');
+
+  const bodyRows = rows
+    .map((item, idx) => {
+      const cols = [
+        `<td>${idx + 1}</td>`,
+        `<td>${escapeHtml(item.fullName)}</td>`,
+        `<td>${escapeHtml(item.role)}</td>`,
+        `<td>${escapeHtml(item.department)}</td>`,
+      ];
+      if (includeTopic) cols.push(`<td>${escapeHtml(item.attempt?.topic || '-')}</td>`);
+      if (includeResult) cols.push(`<td>${escapeHtml(item.attempt?.result || '-')}</td>`);
+      return `<tr>${cols.join('')}</tr>`;
+    })
+    .join('');
+
+  showDrillContent(
+    title,
+    `<div class="drill-toolbar"><span>Jami: ${rows.length} ta xodim</span></div>
+     <div class="drill-table-wrap">
+       <table class="drill-table">
+         <thead><tr>${headers.map((item) => `<th>${item}</th>`).join('')}</tr></thead>
+         <tbody>${bodyRows}</tbody>
+       </table>
+     </div>`,
+  );
+}
+
+function renderTestTopicsDrill(mode) {
+  if (!latestDrillContext?.tests?.length) {
+    showDrillContent("Jami testlar", '<div class="drill-toolbar">Filtrlangan kesimda testlar topilmadi.</div>');
+    return;
+  }
+
+  drillTopicMode = mode;
+  const title = mode === 'hardQuestions' ? 'Qiyin savollar ulushi bo‘yicha testlar' : 'Jami testlar ro‘yxati';
+  const buttons = latestDrillContext.tests
+    .map(
+      (test, idx) =>
+        `<button class="drill-topic-btn" type="button" data-drill-action="open-topic" data-topic="${escapeHtml(test.topic)}">
+          <span class="drill-topic-index">${idx + 1}</span>${escapeHtml(test.topic)}
+          <small>${escapeHtml(test.version)} · ${test.totalQuestions} savol</small>
+        </button>`,
+    )
+    .join('');
+  showDrillContent(title, `<div class="drill-topic-grid">${buttons}</div>`);
+}
+
+function renderTestTopicDetails(topic) {
+  const test = latestDrillContext?.tests?.find((item) => item.topic === topic);
+  if (!test) return;
+  const hardOnly = drillTopicMode === 'hardQuestions';
+  const questions = hardOnly ? test.questions.filter((q) => q.hard) : test.questions;
+  const subtitle = hardOnly ? 'Faqat qiyin savollar ko‘rsatilmoqda' : 'Savollar, variantlar va to‘g‘ri javoblar';
+  const cards = questions
+    .map((q) => {
+      const options = q.options
+        .map((opt, idx) => `<li>${'ABCD'.charAt(idx)}. ${escapeHtml(opt)}</li>`)
+        .join('');
+      return `<article class="drill-question-card">
+        <h6>${escapeHtml(q.text)}</h6>
+        <ul class="drill-options">${options}</ul>
+        <div class="drill-answer">To‘g‘ri javob: ${q.correctAnswer}${hardOnly ? ` · Noto‘g‘ri javoblar: ${q.wrongRate}%` : ''}</div>
+      </article>`;
+    })
+    .join('');
+
+  showDrillContent(
+    `${test.topic} — ${hardOnly ? 'Qiyin savollar' : 'Savollar tafsiloti'}`,
+    `<div class="drill-toolbar">
+      <span>${questions.length} ta savol</span>
+      <button class="drill-back-btn" type="button" data-drill-action="back-topics">Orqaga</button>
+    </div>
+    <div class="drill-content">${cards || '<div class="drill-toolbar">Qiyin savollar topilmadi.</div>'}</div>`,
+    subtitle,
+  );
+}
+
+function openCardDrillDown(cardKey) {
+  const records = getFilteredDashboardRecords(currentDashboardType);
+  latestDrillContext = buildDrillContext(records);
+  activeDrillCardKey = cardKey;
+  setDrillModalAccent(cardKey);
+
+  const employees = latestDrillContext.employees || [];
+  if (cardKey === 'totalEmployees') {
+    renderEmployeeDrill('Jami xodimlar ro‘yxati', employees);
+    return;
+  }
+  if (cardKey === 'submittedEmployees') {
+    renderEmployeeDrill('Test topshirgan xodimlar', employees.filter((item) => item.attempt), true, false);
+    return;
+  }
+  if (cardKey === 'passedEmployees') {
+    renderEmployeeDrill('Muvaffaqiyatli o‘tgan xodimlar', employees.filter((item) => item.attempt?.passed), true, true);
+    return;
+  }
+  if (cardKey === 'failedEmployees') {
+    renderEmployeeDrill('Yiqilgan xodimlar', employees.filter((item) => item.attempt && !item.attempt.passed), true, true);
+    return;
+  }
+  if (cardKey === 'totalTests') {
+    renderTestTopicsDrill('allTests');
+    return;
+  }
+  if (cardKey === 'hardQuestions') {
+    renderTestTopicsDrill('hardQuestions');
+    return;
+  }
 }
 
 function initDashboardDocFilters() {
@@ -1222,6 +1600,10 @@ function updateDashboardVersionFilterOptions() {
 
 function applyDashboardDocFilters() {
   renderDashboardPreset(currentDashboardType);
+  if (activeDrillCardKey) {
+    openCardDrillDown(activeDrillCardKey);
+    return;
+  }
   setInsightDetail(currentInsightType);
 }
 
@@ -1770,7 +2152,9 @@ roleSwitcherOptions.forEach((option) => {
     const role = option.getAttribute('data-role');
     if (!role) return;
     setActiveRole(role);
+    persistRole(role);
     closeRoleSwitcher();
+    redirectByRole(role);
   });
 });
 openTestBuilderBtn?.addEventListener('click', showTestBuilder);
@@ -1818,6 +2202,29 @@ dashVersionTrigger?.addEventListener('click', () => {
   dashVersionDropdown?.classList.toggle('open');
   dashRuleTypeDropdown?.classList.remove('open');
   dashDocNameDropdown?.classList.remove('open');
+});
+
+document.addEventListener('click', (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  const metricCard = target.closest('.metric-card[data-card-key]');
+  if (metricCard && dashboardTypeSelect) {
+    const cardKey = metricCard.getAttribute('data-card-key');
+    if (cardKey) openCardDrillDown(cardKey);
+    return;
+  }
+
+  const drillAction = target.closest('[data-drill-action]');
+  if (!drillAction || !dashboardTypeSelect) return;
+  const action = drillAction.getAttribute('data-drill-action');
+  if (action === 'open-topic') {
+    const topic = drillAction.getAttribute('data-topic');
+    if (topic) renderTestTopicDetails(topic);
+  }
+  if (action === 'back-topics') {
+    if (drillTopicMode) renderTestTopicsDrill(drillTopicMode);
+  }
 });
 
 dashPeriodButtons.forEach((button) => {
@@ -1894,6 +2301,13 @@ dashboardModal?.addEventListener('click', (event) => {
   }
 });
 
+dashboardDrillModal?.addEventListener('click', (event) => {
+  if (event.target instanceof HTMLElement && event.target.matches('[data-drill-close="true"]')) {
+    closeDashboardDrillModal();
+  }
+});
+dashboardDrillCloseBtn?.addEventListener('click', closeDashboardDrillModal);
+
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
   closeRoleSwitcher();
@@ -1905,6 +2319,9 @@ document.addEventListener('keydown', (event) => {
   }
   if (dashboardModal?.classList.contains('show')) {
     closeDashboardModal();
+  }
+  if (dashboardDrillModal?.classList.contains('show')) {
+    closeDashboardDrillModal();
   }
 });
 
@@ -1957,4 +2374,18 @@ applyDashboardDocFilters();
 setDashboardView('overview');
 applyMainPageFilters();
 setInsightDetail(currentInsightType);
-setActiveRole(roleSwitcherBtn?.textContent?.trim() || 'Yurist-rahbar');
+const initialRole = getPersistedRole() || roleSwitcherBtn?.textContent?.trim() || 'Yurist-rahbar';
+setActiveRole(initialRole);
+persistRole(initialRole);
+redirectByRole(initialRole);
+startDashboardAutoRefresh();
+
+document.addEventListener('visibilitychange', () => {
+  if (!dashboardTypeSelect) return;
+  if (document.hidden) {
+    if (dashboardAutoRefreshTimer) clearInterval(dashboardAutoRefreshTimer);
+    dashboardAutoRefreshTimer = null;
+    return;
+  }
+  startDashboardAutoRefresh();
+});

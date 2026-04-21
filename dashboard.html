@@ -302,6 +302,7 @@
                 Eng yuqori natija Yuridik bo‘limida qayd etilgan. O‘rtacha topshirish vaqti 14 daqiqa.
                 Qayta topshirish ko‘proq Operatsion va Risk yo‘nalishlarida kuzatilgan.
               </p>
+              <div class="drill-content hidden" id="insightDetailContent"></div>
             </div>
           </div>
 
@@ -409,6 +410,18 @@
       </section>
     </div>
   </section>
+
+  <div class="dashboard-drill-modal" id="dashboardDrillModal" aria-hidden="true">
+    <div class="dashboard-drill-backdrop" data-drill-close="true"></div>
+    <section class="dashboard-drill-window" role="dialog" aria-modal="true" aria-label="Drill down ma'lumotlari">
+      <header class="dashboard-drill-head">
+        <h4 id="dashboardDrillTitle">Drill down</h4>
+        <button class="dashboard-drill-close-btn" id="dashboardDrillCloseBtn" type="button">✕</button>
+      </header>
+      <p class="dashboard-drill-subtitle hidden" id="dashboardDrillSubtitle"></p>
+      <div class="drill-content" id="dashboardDrillBody"></div>
+    </section>
+  </div>
 
   <script src="script.js"></script>
 </body>

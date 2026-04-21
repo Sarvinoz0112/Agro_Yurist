@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroOne - Kanselyariya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="kanselyariya.css" />
+</head>
+<body class="kanz-page">
+  <div class="app-bg"></div>
+
+  <header class="top-nav">
+    <div class="brand">AgroOne</div>
+    <nav class="top-links">
+      <a class="active" href="kanselyariya.html">Документы</a>
+      <a href="#">Исполнительская дисциплина</a>
+      <a href="../dashboard.html">Дашборд</a>
+      <a href="#">Чат</a>
+      <a href="#">Бланки</a>
+      <a href="#">Антикоррупция</a>
+      <a href="../index.html">Методология</a>
+    </nav>
+    <div class="role-switcher" id="roleSwitcher">
+      <button class="profile" id="roleSwitcherBtn" type="button" aria-haspopup="true" aria-expanded="false">Kanselyariya</button>
+      <div class="role-switcher-menu" id="roleSwitcherMenu" hidden>
+        <button class="role-switcher-option active" type="button" data-role="Kanselyariya">Kanselyariya</button>
+        <button class="role-switcher-option" type="button" data-role="Rahbar-yordamchi">Rahbar-yordamchi</button>
+        <button class="role-switcher-option" type="button" data-role="Rahbar">Rahbar</button>
+        <button class="role-switcher-option" type="button" data-role="Yurist-yordamchi">Yurist-yordamchi</button>
+        <button class="role-switcher-option" type="button" data-role="Yurist-rahbar">Yurist-rahbar</button>
+        <button class="role-switcher-option" type="button" data-role="Ijrochi">Ijrochi</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="kanz-top-accent"></div>
+
+  <main class="kanz-shell">
+    <aside class="kanz-sidebar">
+      <div class="kanz-side-head">
+        <div class="kanz-side-title">
+          <span class="kanz-icon">⌁</span>
+          <div>
+            <h3>Фильтры</h3>
+            <span>Документы</span>
+          </div>
+        </div>
+        <button class="kanz-mini-btn" type="button" aria-label="Свернуть фильтры">◻</button>
+      </div>
+
+      <div class="kanz-group">
+        <h5>ИСТОЧНИК / КАНАЛ</h5>
+        <select>
+          <option>Выберите источник...</option>
+          <option>Корпоративная почта</option>
+          <option>LOTUS</option>
+          <option>EXAT</option>
+        </select>
+      </div>
+
+      <div class="kanz-group">
+        <h5>СТАТУСЫ</h5>
+        <label><input type="checkbox" /> Новый</label>
+        <label><input type="checkbox" checked /> В процессе</label>
+        <label><input type="checkbox" /> Завершен</label>
+        <label><input type="checkbox" /> Просрочен</label>
+      </div>
+
+      <div class="kanz-group">
+        <h5>ОРГАНИЗАЦИЯ</h5>
+        <select>
+          <option>Выбор организации...</option>
+          <option>UZINFOCOM</option>
+          <option>М Bank</option>
+          <option>CBU</option>
+        </select>
+      </div>
+
+      <div class="kanz-group">
+        <h5>СОЗДАТЕЛЬ (АВТОР)</h5>
+        <select>
+          <option>Выберите автора...</option>
+          <option>POST-OFFICE</option>
+        </select>
+      </div>
+
+      <div class="kanz-group">
+        <h5>ГЛАВНЫЙ ИСПОЛНИТЕЛЬ</h5>
+        <select>
+          <option>Выберите исполнителя...</option>
+          <option>POST-OFFICE</option>
+          <option>Yurist-rahbar</option>
+        </select>
+      </div>
+
+      <div class="kanz-group">
+        <h5>НОМЕНКЛАТУРА ДЕЛ</h5>
+        <input type="text" placeholder="Например: 01-14..." />
+      </div>
+
+      <div class="kanz-group">
+        <h5>СВЯЗАННЫЙ ДОКУМЕНТ (ID)</h5>
+        <input type="text" placeholder="ID документа" />
+      </div>
+
+      <div class="kanz-group">
+        <h5>ДАТА РЕГИСТРАЦИИ</h5>
+        <small>От и До</small>
+        <div class="kanz-date-row">
+          <input type="text" placeholder="дд.мм.гггг" />
+          <input type="text" placeholder="дд.мм.гггг" />
+        </div>
+      </div>
+
+      <div class="kanz-actions">
+        <button class="ghost" type="button">↻</button>
+        <button class="primary" type="button">✓ Применить</button>
+      </div>
+    </aside>
+
+    <section class="kanz-content">
+      <div class="kanz-content-head">
+        <div class="kanz-content-title">
+          <span class="kanz-icon">⎘</span>
+          <div>
+          <h2>БАЗА ДОКУМЕНТОВ</h2>
+          <p>ДОКУМЕНТООБОРОТ</p>
+          </div>
+        </div>
+        <div class="kanz-tools">
+          <span class="kanz-count">45 найдено</span>
+          <input type="text" placeholder="Поиск документов..." />
+          <div class="kanz-view-switch">
+            <button class="kanz-mini-btn" type="button" aria-label="Список">☰</button>
+            <button class="kanz-mini-btn" type="button" aria-label="Колонки">▥</button>
+            <button class="kanz-mini-btn" type="button" aria-label="Сетка">◫</button>
+          </div>
+          <button class="primary" id="openCreateModalBtn" type="button">+ Создать</button>
+        </div>
+      </div>
+
+      <div class="kanz-table-wrap">
+        <table class="kanz-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Дата регистрации</th>
+              <th>Номер регистрации</th>
+              <th>Тип</th>
+              <th>Организация</th>
+              <th>Краткое содержание</th>
+              <th>Ответственный</th>
+              <th>Этап</th>
+              <th>Статус</th>
+              <th>Источник</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>21 апр. 2026 г.</td><td>PISMO-2026-0052</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0052</td><td>POST-OFFICE</td><td>У исполнителя</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">Корпоративная почта</span></td></tr>
+            <tr><td>2</td><td>20 апр. 2026 г.</td><td>PISMO-2026-0050</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0050</td><td>POST-OFFICE</td><td>У ёрдамчи</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">Корпоративная почта</span></td></tr>
+            <tr><td>3</td><td>19 апр. 2026 г.</td><td>PISMO-2026-0048</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0048</td><td>POST-OFFICE</td><td>У ёрдамчи</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">Корпоративная почта</span></td></tr>
+            <tr><td>4</td><td>18 апр. 2026 г.</td><td>PISMO-2026-0047</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0047</td><td>POST-OFFICE</td><td>На исполнении</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">LOTUS</span></td></tr>
+            <tr><td>5</td><td>18 апр. 2026 г.</td><td>PISMO-2026-0046</td><td>Письмо</td><td>Кабинет Министров</td><td>PISMO-2026-0046</td><td>POST-OFFICE</td><td>У ёрдамчи</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">EXAT</span></td></tr>
+            <tr><td>6</td><td>18 апр. 2026 г.</td><td>PISMO-2026-0045</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0045</td><td>POST-OFFICE</td><td>На подписи</td><td><span class="kchip warn">В работе</span></td><td><span class="kchip src">Корпоративная почта</span></td></tr>
+            <tr><td>7</td><td>17 апр. 2026 г.</td><td>PISMO-2026-0044</td><td>Письмо</td><td>UZINFOCOM</td><td>PISMO-2026-0044</td><td>POST-OFFICE</td><td>На подписи</td><td><span class="kchip warn">В работе</span></td><td><span class="kchip src">EXAT</span></td></tr>
+            <tr><td>8</td><td>16 апр. 2026 г.</td><td>PISMO-2026-0043</td><td>Письмо</td><td>CBU</td><td>PISMO-2026-0043</td><td>POST-OFFICE</td><td>На исполнении</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">LOTUS</span></td></tr>
+            <tr><td>9</td><td>16 апр. 2026 г.</td><td>PISMO-2026-0041</td><td>Письмо</td><td>Кабинет Министров</td><td>PISMO-2026-0041</td><td>POST-OFFICE</td><td>У ёрдамчи</td><td><span class="kchip work">В работе</span></td><td><span class="kchip src">LOTUS</span></td></tr>
+            <tr><td>10</td><td>16 апр. 2026 г.</td><td>PISMO-2026-0040</td><td>Письмо</td><td>M Bank</td><td>PISMO-2026-0040</td><td>POST-OFFICE</td><td>На подписи</td><td><span class="kchip warn">В работе</span></td><td><span class="kchip src">EXAT</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="kanz-pagination">
+        <button type="button">‹</button>
+        <button class="active" type="button">1</button>
+        <button type="button">2</button>
+        <button type="button">3</button>
+        <button type="button">›</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="kanz-fab-wrap" aria-hidden="true">
+    <button class="kanz-fab dark" type="button">💬</button>
+    <button class="kanz-fab blue" type="button">🤖</button>
+  </div>
+
+  <div class="create-modal" id="createModal" aria-hidden="true">
+    <div class="create-modal-backdrop" data-create-close="true"></div>
+    <section class="create-modal-window" role="dialog" aria-modal="true" aria-label="Создание документа">
+      <header class="create-modal-top">
+        <div class="create-title-left">⊕ СОЗДАНИЕ ДОКУМЕНТА</div>
+        <button class="create-close-btn" id="createCloseBtn" type="button">✕</button>
+      </header>
+
+      <div class="create-modal-body">
+        <div id="createHomeView">
+          <h2>Создание документа</h2>
+          <p>Выберите журнал или найдите нужный тип документа напрямую</p>
+
+          <div class="create-search-wrap">
+            <input type="text" placeholder="Поиск по названию или коду (IT-14)" />
+          </div>
+
+          <div class="create-cards">
+            <button type="button" class="create-card">Входящий <span>›</span></button>
+            <button type="button" class="create-card">Исходящие <span>›</span></button>
+            <button type="button" class="create-card">Внутренние <span>›</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="kanselyariya.js"></script>
+</body>
+</html>
